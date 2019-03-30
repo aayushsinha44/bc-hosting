@@ -19,11 +19,13 @@ queue_name = result.method.queue
 
 channel.queue_bind(exchange='messages', queue=queue_name)
 
-print(' [*] Waiting for messages. To exit press CTRL+C')
-
 def system_setup():
 	os.system('sudo apt-get update')
 	os.system('sudo apt-get install python3')
+
+system_setup()
+
+print(' [*] Waiting for messages. To exit press CTRL+C')
 
 def function_api(id):
 	url = 'http://192.168.43.59:8000/function/'+str(id)+'/'
@@ -107,9 +109,6 @@ def callback(ch, method, properties, body):
     address = jwt_string["address"]
     request_number = jwt_string["request_number"]
     event = (jwt_string["event"])
-
-    # system setup
-    system_setup()
 
     # call function api
     res_fun = function_api(function_id)
