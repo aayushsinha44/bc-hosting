@@ -84,9 +84,11 @@ def execute(path):
 
 
 def hit_response_api(token, response):
+	response = response.decode()
 	body = {
 		"token": token,
-		"response": response
+		"response": response,
+		"id": 2
 	}
 	print(response)
 	url = 'http://192.168.43.59:4000/send_response/'
@@ -97,7 +99,7 @@ def hit_response_api(token, response):
 
 def callback(ch, method, properties, body):
     print(" [x] %r" % body)
-    body = json.loads(body)
+    body = json.loads(body.decode())
     token = body["token"]
 
     jwt_string = jwt.decode(token, "asfjoew@23r8wjfosdfn", algorithms=['HS256'])
@@ -107,7 +109,7 @@ def callback(ch, method, properties, body):
     event = (jwt_string["event"])
 
     # system setup
-    #system_setup()
+    system_setup()
 
     # call function api
     res_fun = function_api(function_id)
@@ -128,3 +130,4 @@ channel.basic_consume(
     queue=queue_name, on_message_callback=callback, auto_ack=True)
 
 channel.start_consuming()
+

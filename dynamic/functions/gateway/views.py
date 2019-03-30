@@ -81,7 +81,7 @@ def check_function(request, address, function_name):
 def add_function(request):
     # get alias
     # add function
-
+    print(request.body.decode())
     req = json.loads(request.body.decode())
 
     name = req["name"]
@@ -126,17 +126,34 @@ def update_function(request):
     req = json.loads(request.body.decode())
     id = req["id"]
     user_address = req["user_address"]
+    print(req)
 
     try:
         function_codes = req["function_code"]
-
+        print(function_codes)
         for function_code in function_codes:
             function_object = FunctionModel.objects.get(id=id, user_address=user_address)
-            function_code_object = FunctionCodeModel.objects.get(id=function_code["id"], function=function_object)
-            function_code_object.is_starting = function_code["is_starting"]
-            function_code_object.name = function_code["name"]
-            function_code_object.code = function_code["code"]
-            function_code_object.save()
+            print("counting")
+            print("count", FunctionCodeModel.objects.filter(function=function_object, name=function_code["name"]).count())
+            if FunctionCodeModel.objects.filter(function=function_object, name=function_code["name"]).count() == 0:
+                is_starting = function_code["is_starting"]
+                name = function_code["name"]
+                code = function_code["code"]
+                parent = function_code["parent"]
+                FunctionCodeModel.objects.create(function=function_object,
+                                                 is_starting=is_starting,
+                                                 name=name,
+                                                 parent=parent,
+                                                 code=code)
+
+            else:
+                function_code_object = FunctionCodeModel.objects.get(id=function_code["id"], function=function_object)
+                function_code_object.is_starting = function_code["is_starting"]
+                function_code_object.name = function_code["name"]
+                function_code_object.code = function_code["code"]
+                function_code_object.parent = function_code["parent"]
+                function_code_object.save()
+
 
     except Exception as e:
         pass
@@ -145,10 +162,7 @@ def update_function(request):
 
 
 def get_all_function(request, address):
-    functionModelObject = FunctionModel.objects.get(user_address=address)
-    functionCodeModelObject = list(FunctionCodeModel.objects.filter(function=functionModelObject).values())
 
     return HttpResponse(json.dumps({
-        "function": list(FunctionModel.objects.filter(id=id).values()),
-        "data": functionCodeModelObject
+        "function": list(FunctionModel.objects.filter(user_address=address).values()),
     }), content_type='application/json')
