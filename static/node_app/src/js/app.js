@@ -771,6 +771,7 @@ function dataURItoBlob(dataURI) {
 }
 
 function refract_notexisting_file(html) {
+	console.log("inside refract");
 	var parsedDoc = new DOMParser().parseFromString(html, 'text/html');
 	for(var i=0;i<tag_arr_len;i++){
 		var tag = parsedDoc.getElementsByTagName(tag_arr[i]);
