@@ -34,7 +34,7 @@ var ycounter=0;
 
 
 function init() {
-	console.log('App started....');
+	//console.log('App started....');
 	$('#file_upload_form').hide();
 	initWeb3();
 }
@@ -52,11 +52,11 @@ function initWeb3() {
 
 function initContracts() {
 	$.getJSON("DNS.json", function(DNS){
-		console.log(DNS);
+		//console.log(DNS);
       App.contracts.DNS = TruffleContract(DNS);
       App.contracts.DNS.setProvider(App.web3Provider);
       App.contracts.DNS.deployed().then(function(DNS) {
-        console.log("DNS address:", DNS.address);
+        //console.log("DNS address:", DNS.address);
         $.getJSON("Website.json", function(website) {
           website.networks[4] = {};
           website.networks[4].address = "";
@@ -94,7 +94,7 @@ metamask_cnt = 0;
 }
 
 function loadWebsite(address,e) {
-	console.log(e);
+	//console.log(e);
 	document.getElementById("file-input").value = "";
 	$(".boughtDomain").css("background","none");
 	// $(".boughtDomain").css("background-color:hover","yellow");
@@ -111,14 +111,14 @@ function loadWebsite(address,e) {
     App.website_loaded = true;
     App.website_address = address;
     App.contracts.Website.deployed().then(function(website) {
-      console.log("Website Address:", website.address);
+      //console.log("Website Address:", website.address);
       renderWebsiteData();
     });
 }
 
 // Render portal for particular clicked website
 function renderWebsiteData() {
-	console.log("Inside render website data");
+	//console.log("Inside render website data");
 	// $('#file_upload_form').show();
 	// $.when(getAllFiles()).then(displayDomainFiles());
 	getAllFiles();
@@ -127,12 +127,12 @@ function renderWebsiteData() {
 
 
 function render() {
-	console.log("Rendering started...", web3);
+	//console.log("Rendering started...", web3);
 	web3.eth.getCoinbase(function(err, account) {
-		console.log(err, account);
+		//console.log(err, account);
 	  if(err === null) {
 		App.account = account;
-		console.log("account:", App.account);
+		//console.log("account:", App.account);
 		$("#accountNumber").html(App.account)
 		//If user hasn't logged in using MetaMask..Display Nothing and give alert
 		if(!account){
@@ -146,14 +146,14 @@ function render() {
 	App.contracts.DNS.deployed().then(function(instance) {
 	  return (instance.getUserWebsites());
 	}).then(function(address) {
-	  console.log(address);
+	  //console.log(address);
 	  for(var i=0;i<address.length;i++) {
 	    //console.log(address[i]);
 	    getWebsiteName(address[i]);
 	  }
 	});
 	var pathname=window.location.pathname;
-	console.log(pathname);
+	//console.log(pathname);
 		if(pathname.endsWith("index.html")||pathname.endsWith("/")){
 			var createWebsiteForm = $('#createWebsiteForm');
 			createWebsiteForm.show();
@@ -176,7 +176,7 @@ function createWebsite() {
 	    gas: 5000000
 	  });
 	}).then(function(result) {
-		console.log("Website created");
+		//console.log("Website created");
 		//This is added to reload the portal if website is created from portal to add the new website in domainsList
 		var pathname=window.location.pathname;
 		if(pathname.endsWith("portal.html")){
@@ -204,7 +204,7 @@ function getWebsiteName(address) {
 		// TODO onclick call loadWebsite
 		var domele = "<div class='boughtDomain' val='"+address+"' id='boughtDomainItem' onclick=loadWebsite('"+address+"',this)>"+name +"</div>";
 		$("#domainsList").append(domele);
-		console.log(name, address);
+		//console.log(name, address);
 	});
 }
 
@@ -214,8 +214,8 @@ function checkValidDomain(name){
 		if((name.charAt(i)>='0'&&name.charAt(i)<='9')||(name.charAt(i)>='a'&&name.charAt(i)<='z')||(name.charAt(i)=='-')){
 			continue;
 		}else{
-			console.log("Invalid");
-			console.log(name.charAt(i));
+			//console.log("Invalid");
+			//console.log(name.charAt(i));
 			return false;
 		}
 	  }
@@ -228,7 +228,7 @@ function checkDomainAvaibility() {
 	$("#websiteName").val(website_name);
 	website_name = website_name.trim();
 	if(website_name.charAt(0)=='-'||website_name.charAt(website_name.length-1)=='-'){
-		console.log("Invalid");
+		//console.log("Invalid");
 		alert("Domain name can't begin or end with -");
 		$("#domainCheckLoading").hide();
 		return;
@@ -243,16 +243,16 @@ function checkDomainAvaibility() {
 	App.contracts.DNS.deployed().then(function(instance) {
 		return instance.checkDomainAvaibility(website_name);
 	}).then(function(status) {
-		console.log(status);
+		//console.log(status);
 		$("#domainCheckLoading").hide();
 		if(status == true) {
-			console.log('Domain Available');
+			//console.log('Domain Available');
 			$('#createButton').prop('disabled', false);
 			$("#domainIsAvailable").show();
 			$("#domainIsUnavailable").hide();
 			$('#websiteName').attr('readonly', true);
 		} else {
-			console.log("Domain Unavailable");
+			//console.log("Domain Unavailable");
 			$("#domainIsAvailable").hide();
 			$("#domainIsUnavailable").show();
 			$('#websiteName').attr('readonly', false);
@@ -269,7 +269,7 @@ function uploadHashToBlockChain(name, hash) {
 			gas: 5000000
 		  });
 	}).then(function () {
-		console.log('File uploaded successfully');
+		//console.log('File uploaded successfully');
 		ycounter+=1;
 		var fileStr= "fileNumber"+String(ycounter);
 		$("#"+fileStr).removeClass("fa-clock-o");
@@ -278,9 +278,9 @@ function uploadHashToBlockChain(name, hash) {
 		document.getElementById(fileStr).style.color = "green";
 		//$("#loadingConfirmation").append("<div style='height:25px;margin-top:10px;'><i class='fa fa-check-circle' style='color:green;'></i></div>");
 		metamask_cnt++;
-		console.log(name);
-		console.log("Testing Successfully");
-		console.log(metamask_cnt,total_files_altered);
+		//console.log(name);
+		//console.log("Testing Successfully");
+		//console.log(metamask_cnt,total_files_altered);
 		if(metamask_cnt === total_files_altered)
 		{
 			//hide modal
@@ -300,7 +300,7 @@ function updateHashOnBlockChain(name, hash) {
 			gas: 5000000
 		  });
 	}).then(function () {
-		console.log('File updated successfully');
+		//console.log('File updated successfully');
 		ycounter+=1;
 		var fileStr= "fileNumber"+String(ycounter);
 		$("#"+fileStr).removeClass("fa-clock-o");
@@ -309,8 +309,8 @@ function updateHashOnBlockChain(name, hash) {
 		
 		//$("#loadingConfirmation").append("<div style='height:25px;margin-top:10px;'><i class='fa fa-check-circle' style='color:green;'></i></div>");
 		metamask_cnt++;
-		console.log("Testing Successfully");
-		console.log(metamask_cnt,total_files_altered);
+		//console.log("Testing Successfully");
+		//console.log(metamask_cnt,total_files_altered);
 		if(metamask_cnt === total_files_altered)
 		{
 			//hide modal
@@ -319,21 +319,21 @@ function updateHashOnBlockChain(name, hash) {
 			location.reload();
 		}
 	}).catch(function(err) {
-		console.log(err);
+		//console.log(err);
 	});
 }
 
 function deleteHashOnBlockChain(name) {
 	var confirmation = confirm("Are you sure you want to delete this file?");
 	if(confirmation==true){
-	console.log(name);
+	//console.log(name);
 	App.contracts.Website.deployed().then(function(instance) {
 		return instance.deleteFile(name,  {
 			from: App.account,
 			gas: 5000000
 		  });
 	}).then(function () {
-		console.log('File deleted successfully');
+		//console.log('File deleted successfully');
 		clearGlobalVariables();
 		document.getElementById("file-input").value = "";
 		$("#domainInfo").html("");
@@ -344,7 +344,7 @@ function deleteHashOnBlockChain(name) {
 		App.contracts.Website.setProvider(App.web3Provider);
 		App.website_loaded = true;
 		App.contracts.Website.deployed().then(function(website) {
-		  console.log("Website Address:", website.address);
+		  //console.log("Website Address:", website.address);
 		  renderWebsiteData();
 		});
 	}).catch(function(err) {
@@ -362,21 +362,21 @@ function mapDNS(website_name, file_hash) {
 			gas: 5000000
 		  });
 	}).then(function (){
-		console.log('Website mapped successfully.');
+		//console.log('Website mapped successfully.');
 	});
 }
 
 
 function getAllFiles() {
 	var website_instance;
-	console.log("Inside getAllfiles()");
+	//console.log("Inside getAllfiles()");
 	App.contracts.Website.deployed().then(function(instance){
 		website_instance = instance;
 		return website_instance.getFileLength();
 	}).then(function(fileLength) {
 		file_length = fileLength.c[0];
 	}).then(function () {
-		console.log('file length:', file_length);
+		//console.log('file length:', file_length);
 		if(file_length == 0) {
 			displayDomainFiles();
 		} else {
@@ -389,7 +389,7 @@ function getAllFiles() {
 
 function evaluateFile(fileName) {
 	fileName.then(function(result) {
-		console.log(result);
+		//console.log(result);
 		existing_file.push({fileName: result, hash: ""});
 		getFileHashFromBlockChain(result);
 	})
@@ -414,18 +414,18 @@ function getFileHashFromBlockChain(fileName) {
 // information is retrieved from blockhain
 function displayDomainFiles(){
 	$("#domainViewLoading").hide();
-	console.log(existing_file);
-	console.log(existing_file.length);
+	//console.log(existing_file);
+	//console.log(existing_file.length);
 	var existing_file_length= existing_file.length;
 	if(existing_file_length==0){
 		$("#domainInfo").html("");
-		console.log("ADD BUTTON DISPLAY");
+		//console.log("ADD BUTTON DISPLAY");
 		// $("#domainInfo").html("<button class='btn btn-danger'>Add Files</button>");
 		$("#file_upload_form").show();
 	}else{
 		$("#domainInfo").html("");
-		console.log("DISPLAY FILE STRUCTURE");
-		console.log("OTHER BUTTONS DISPLAY");
+		//console.log("DISPLAY FILE STRUCTURE");
+		//console.log("OTHER BUTTONS DISPLAY");
 		for(var i=0;i<existing_file_length;i++){
 			// existing_file[i].hash
 			//console.log(existing_file[i].fileName);
@@ -441,7 +441,7 @@ function displayDomainFiles(){
 
 //This function is called when all current files are uploaded to ipfs (except html files)-->doubt.
 function handle_update_files(){
-	console.log("Called One time");
+	//console.log("Called One time");
 	var existing_file_length = existing_file.length;
 	var len = file_name_hash_map.length;
 	var flag;
@@ -466,9 +466,9 @@ function handle_update_files(){
 	}
 {/* <a href="https://apple.bc/" target="_blank">View your domain</a> */}
 	var len = file_name_html_blob_url.length;
-	console.log(len);
+	//console.log(len);
 	html_required_cnt = len;
-	console.log(html_required_cnt);
+	//console.log(html_required_cnt);
 	html_uploaded_cnt = 0;
 	if(html_uploaded_cnt === html_required_cnt)
 		{
@@ -483,7 +483,7 @@ function handle_update_files(){
   		var url_blob = file_name_html_blob_url[i].url;
   		var fname_blob = file_name_html_blob_url[i].fname;
 
-  		console.log("upload_Html_Files",url_blob,fname_blob);
+  		//console.log("upload_Html_Files",url_blob,fname_blob);
   		handlingHTMLUpload(url_blob, fname_blob);    // this will refract html
   		
 	  }
@@ -495,7 +495,7 @@ function upload_existing_html_files(){
 	var existing_file_length = existing_file.length;    // loaded during load of website
 	var len = file_name_hash_map.length;
 	var extension,flag,j;
-	console.log("Existing_File",existing_file_length);
+	//console.log("Existing_File",existing_file_length);
 	for(var i=0;i<existing_file_length;i++)
 	{
 		extension = getFileExtension(existing_file[i].fileName);
@@ -535,11 +535,11 @@ function refract_existing_files(fileName,hash){
 		var len = tag.length;
 		for(var j=0;j<len;j++){
 		if( tag_arr[i] === 'link' ){
-			console.log(tag[j].href);
+			//console.log(tag[j].href);
 			if(tag[j].href.startsWith("https://ipfs.io/ipfs/"))
 			{
 				var old_hash = tag[j].href.split('https://ipfs.io/ipfs/')[1];
-				console.log("Older Hash="+old_hash);
+				//console.log("Older Hash="+old_hash);
 				var file_name_from_hash = get_file_name_from_hash(old_hash);//older hash
 				var new_hash = get_new_hash(file_name_from_hash);
 				tag[j].href = 'https://ipfs.io/ipfs/' + new_Hash;
@@ -550,11 +550,11 @@ function refract_existing_files(fileName,hash){
 			continue;
 		}
 		else{
-			console.log(tag[j].src);
+			//console.log(tag[j].src);
 			if(tag[j].src.startsWith("https://ipfs.io/ipfs/"))
 			{
 				var old_hash = tag[j].src.split('https://ipfs.io/ipfs/')[1];
-				console.log("Older Hash="+old_hash);
+				//console.log("Older Hash="+old_hash);
 				var file_name_from_hash = get_file_name_from_hash(old_hash);//older hash
 				var new_hash = get_new_hash(file_name_from_hash);
 				tag[j].src = 'https://ipfs.io/ipfs/' + new_Hash;
@@ -600,7 +600,7 @@ function reuploadFileToIPFS(file,fileName,extension) {
 		    return;
 		  }
 		  let url = 'https://ipfs.io/ipfs/' + result[0].hash;
-		  console.log('Url', url);
+		  //console.log('Url', url);
 		  updateHashOnBlockChain(fileName, result[0].hash);
 		  total_files_altered++;
 		});
@@ -625,8 +625,8 @@ function uploadFileToIPFS(file,fileName,extension) {
 		    return;
 		  }
 		  let url = 'https://ipfs.io/ipfs/' + result[0].hash;
-		  console.log('Url', url);
-		  console.log(fileName,extension);
+		  //console.log('Url', url);
+		  //console.log(fileName,extension);
 		  //uploadHashToBlockChain(fileName, result[0].hash);
 		  file_name_hash_map.push({name: fileName, hash: result[0].hash});
 		  cnt += 1;
@@ -653,16 +653,16 @@ function uploadFileToIPFS(file,fileName,extension) {
 		  			updateHashOnBlockChain(fileName,result[0].hash);
 		  			total_files_altered++;
 		  		}
-		  	console.log("Joey");console.log("Joey");console.log("Joey");console.log("Joey");console.log("Joey");console.log("Joey");
-		  	console.log(html_required_cnt,html_uploaded_cnt);
+		  	//console.log("Joey");console.log("Joey");console.log("Joey");console.log("Joey");console.log("Joey");console.log("Joey");
+		  	//console.log(html_required_cnt,html_uploaded_cnt);
 		  	if(html_uploaded_cnt === html_required_cnt)
 					upload_existing_html_files();   
 		  }
-		  console.log("checking for cnt");
-		  console.log(cnt);
-		  console.log(required_cnt);
+		  //console.log("checking for cnt");
+		  //console.log(cnt);
+		  //console.log(required_cnt);
 		  if(cnt === required_cnt) {
-		  	console.log("html",fileName);
+		  	//console.log("html",fileName);
 		  	required_cnt = -10000;
 		  	handle_update_files();
 		  }
@@ -672,11 +672,11 @@ function uploadFileToIPFS(file,fileName,extension) {
 }
 
 function getFileHash(fileName){
-	console.log(file_name_hash_map,fileName,"check");
+	//console.log(file_name_hash_map,fileName,"check");
 	var len = file_name_hash_map.length;
 	for(var i=0;i<len;i++){
 		if(file_name_hash_map[i].name === fileName){
-			console.log(fileName,file_name_hash_map[i].hash);
+			//console.log(fileName,file_name_hash_map[i].hash);
 			return file_name_hash_map[i].hash;
 		}
 	}
@@ -714,7 +714,7 @@ function getChangedFileName(dirName){
 
 	if(dirLength-1 >= 0)
 		dirStructure = dirStructure+dirName[dirLength-1];
-	console.log(dirStructure,"old");
+	//console.log(dirStructure,"old");
 	var new_dir_Structure = "";
 	var new_dir_Name = dirStructure.split("#$@!=%&()");
 	var new_dir_length = new_dir_Name.length;
@@ -732,7 +732,7 @@ function getChangedFileName(dirName){
 	if(new_dir_length-1 >= 0)
 		new_dir_Structure = new_dir_Structure + new_dir_Name[new_dir_length-1];
 
-	console.log(dirName,new_dir_Structure);
+	//console.log(dirName,new_dir_Structure);
 	return new_dir_Structure;
 }
 
@@ -747,7 +747,7 @@ function rechangeFileName(fileName){
 }
 
 function handlingHTMLUpload(url_blob, fname_blob) {
-	console.log("inside handlingHTML");
+	//console.log("inside handlingHTML");
 	$.get(url_blob, function(response) {
 		var refracted_html = refract_notexisting_file(response);
 		var fileGenerated = new File([refracted_html],fname_blob, {type:'text/html'});
@@ -771,35 +771,35 @@ function dataURItoBlob(dataURI) {
 }
 
 function refract_notexisting_file(html) {
-	console.log("inside refract");
+	//console.log("inside refract");
 	var parsedDoc = new DOMParser().parseFromString(html, 'text/html');
 	for(var i=0;i<tag_arr_len;i++){
 		var tag = parsedDoc.getElementsByTagName(tag_arr[i]);
 		var len = tag.length;
 		for(var j=0;j<len;j++){
 		if( tag_arr[i] === 'link' ){
-			console.log(tag[j].href);
+			//console.log(tag[j].href);
 			var changedFileName = getChangedFileName(tag[j].href.split('/'));
-			console.log("refract"+" "+changedFileName);
+			//console.log("refract"+" "+changedFileName);
 			var file_Hash = getFileHash(changedFileName);
-			console.log(file_Hash);
+			//console.log(file_Hash);
 			if(file_Hash !== "")
 			tag[j].href = 'https://ipfs.io/ipfs/' + file_Hash;
 		}
 		else if( tag_arr[i] === "a" )
 		{
 			//Handle Here
-			console.log(tag[j].href);
+			//console.log(tag[j].href);
 			if(tag[j].href.startsWith("http"))
 			continue;
 			var changedFileName = getChangedFileName(tag[j].href.split('/'));
-			console.log("refract"+" "+changedFileName);
+			//console.log("refract"+" "+changedFileName);
 			tag[j].href = 'http://localhost:3000/' + App.website_address + '/' + changedFileName;
 		}
 		else{
-			console.log(tag[j].src);
+			//console.log(tag[j].src);
 			var changedFileName = getChangedFileName(tag[j].src.split('/'));
-			console.log("refract"+" "+changedFileName);
+			//console.log("refract"+" "+changedFileName);
 			var file_Hash = getFileHash(changedFileName);
 			if(file_Hash !== "")
 			tag[j].src = 'https://ipfs.io/ipfs/' + file_Hash;
@@ -834,7 +834,7 @@ console.log(window);
 
 //Don't Change Anything Here(Zip)
 (function(obj) {
-	console.log(obj);
+	//console.log(obj);
 	var requestFileSystem = obj.webkitRequestFileSystem || obj.mozRequestFileSystem || obj.requestFileSystem;
 
 	function onerror(message) {
@@ -860,7 +860,7 @@ console.log(window);
 //Don't Change Anything Here
 	var model = (function() {
 		var URL = obj.webkitURL || obj.mozURL || obj.URL;
-		console.log(URL,"hihhhh");
+		//console.log(URL,"hihhhh");
 		return {
 			getEntries : function(file, onend) {
 				zip.createReader(new zip.BlobReader(file), function(zipReader) {
@@ -900,9 +900,9 @@ console.log(window);
 		function getResponse(entry, li, a,extension,fileName) {
 			//console.log(entry,"hi");
 			model.getEntryFile(entry, creationMethodInput.value, function(blobURL) {
-					console.log(extension,check_for_only_html);
+					//console.log(extension,check_for_only_html);
 					if((extension === 'html' || extension === 'htm') && check_for_only_html === 0){
-						console.log("hi");
+						//console.log("hi");
   						file_name_html_blob_url.push({fname: fileName, url: blobURL});  // pushing html files
 					}
 					else if(extension !== 'html' && extension !== 'htm'){
@@ -955,9 +955,9 @@ console.log(window);
 		$('.fileListDuringUpload').addClass('opened1');
 			// if(checkForIndex(model,fileInput)){
 			model.getEntries(fileInput.files[0], function(entries) {
-				console.log('entries', entries);
+				//console.log('entries', entries);
 				entries_length = entries.length;
-				console.log(entries.length);
+				//console.log(entries.length);
 				var xcounter=0;
 				entries.forEach(function(entry) {
 					// $("#mainLoading").show();
@@ -969,11 +969,11 @@ console.log(window);
 					a.href = "#";
 
 					var dirName = a.text.split('/');
-					console.log(a.text);
+					//console.log(a.text);
 					// $("#fileBeingUploadedList").append("<p>"+a.text.substr(a.text.indexOf("/")+1)+"</p>");
 					// $("#fileBeingUploadedList").append("<p>"+a.text+"</p>");
 					var changedFileName = getChangedFileName(dirName);
-					console.log("HEALLO",changedFileName);
+					//console.log("HEALLO",changedFileName);
 					var dirLength = dirName.length;
 					var extension = dirName[dirLength-1].toLowerCase().split('.');
 
@@ -982,7 +982,7 @@ console.log(window);
 						var extension = extension[extension.length-1].toLowerCase();
 						if(extension === 'htm' || extension === 'html')
 							html_entry_cnt++;
-						console.log(extension);
+						//console.log(extension);
 						ycounter=0;
 						$("#fileBeingUploadedList").append("<div style='height:25px;margin-top:10px;'>"+a.text+"</div>");
 						$("#loadingConfirmation").append("<div style='height:25px;margin-top:10px;'><i  id='fileNumber"+String(xcounter)+"' class='fa fa-clock-o' style='color:red;'></i></div>");
@@ -993,13 +993,13 @@ console.log(window);
 						entries_length -= 1;
 
 				});
-				console.log("entries length="+entries_length+" "+html_entry_cnt);
+				//console.log("entries length="+entries_length+" "+html_entry_cnt);
 				if(entries_length === html_entry_cnt)
 					{
 						check_for_only_html = 1;         // if all files in zip are html only
 						file_name_html_blob_url = [];
 						html_entry_cnt = 0;
-						console.log("Only Html",entries_length);
+						//console.log("Only Html",entries_length);
 						entries.forEach(function(entry) {
 			
 						var li = document.createElement("li");
@@ -1009,7 +1009,7 @@ console.log(window);
 						a.href = "#";
 
 						var dirName = a.text.split('/');
-						console.log(a.text);
+						//console.log(a.text);
 						// $("#fileBeingUploadedList").append("<p>"+a.text.substr(a.text.indexOf("/")+1)+"</p>");
 						// $("#fileBeingUploadedList").append("<p>"+a.text+"</p>");
 						var changedFileName = getChangedFileName(dirName);
