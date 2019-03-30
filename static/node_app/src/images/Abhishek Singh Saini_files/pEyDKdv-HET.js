@@ -1,0 +1,3 @@
+if (self.CavalryLogger) { CavalryLogger.start_js(["Smkxu"]); }
+
+__d("EntstreamStoryAttachment",["CSS","Event"],(function(a,b,c,d,e,f){a=function(){"use strict";function a(a,c){this.link=a,this.attachment=c,b("CSS").hide(this.attachment),b("Event").listen(this.link,"click",this.showAttachment.bind(this))}var c=a.prototype;c.showAttachment=function(){b("CSS").hide(this.link),b("CSS").show(this.attachment)};return a}();e.exports=a}),null);
