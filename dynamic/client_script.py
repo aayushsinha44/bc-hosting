@@ -7,9 +7,11 @@ import jwt
 import json
 import subprocess
 
+MQ_IP = '192.168.43.59'
+
 cred = pika.PlainCredentials('test', 'test')
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters('192.168.43.59', 5672, "/", cred))
+    pika.ConnectionParameters(MQ_IP, 5672, "/", cred))
 channel = connection.channel()
 
 channel.exchange_declare(exchange='messages', exchange_type='fanout')
@@ -41,9 +43,6 @@ def set_directory_structure(res):
 		os.system('mkdir /tmp/'+str(res["function"][0]["id"])+r["parent"])
 		code = r["code"]
 		name = r["name"]
-
-		print("Folder Created", '/tmp/'+str(res["function"][0]["id"])+r["parent"])
-		print("Creating file", '/tmp/'+str(res["function"][0]["id"])+r["parent"]+name)
 
 		f = open('/tmp/'+str(res["function"][0]["id"])+r["parent"]+name, 'w')
 		f.write(code)
@@ -80,8 +79,6 @@ def add_file(res, event):
 def execute(path):
 	proc=subprocess.Popen('python3 '+path, stdout=subprocess.PIPE, shell=True)
 	out = proc.stdout.read()
-	print("Exec python", path)
-	print(str(out))	
 	return out
 
 
@@ -92,15 +89,13 @@ def hit_response_api(token, response):
 		"response": response,
 		"id": 2
 	}
-	print(response)
 	url = 'http://192.168.43.59:4000/send_response/'
 	res = requests.get(url, json=body)
-	print(res.text)
 	res = json.dumps(res.text)
 	return res
 
 def callback(ch, method, properties, body):
-    print(" [x] %r" % body)
+	print('Received Request')
     body = json.loads(body.decode())
     token = body["token"]
 
@@ -121,7 +116,6 @@ def callback(ch, method, properties, body):
 
     # Execute
     response = execute(path)
-    print(response)
     # hit with response api
     hit_response_api(token, response)
 

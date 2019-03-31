@@ -6,6 +6,7 @@ import time
 import json
 import pika
 import jwt
+from settings import MQ_IP
 
 request_number = 0
 response_list = []
@@ -48,7 +49,7 @@ def callback(ch, method, properties, body):
 
 def start_listening_from_response():
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost'))
+        pika.ConnectionParameters(host=MQ_IP))
     channel = connection.channel()
 
     channel.queue_declare(queue='hello')
@@ -61,7 +62,7 @@ def start_listening_from_response():
 
 def broadcast_message(message):
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost'))
+        pika.ConnectionParameters(host=MQ_IP))
     channel = connection.channel()
 
     channel.exchange_declare(exchange='messages', exchange_type='fanout')

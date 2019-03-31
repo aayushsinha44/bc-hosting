@@ -4,6 +4,7 @@ import json
 import pika
 import json
 import jwt
+from settings import MQ_IP
 
 
 # Create your views here.
@@ -12,7 +13,7 @@ def response_received(request):
     res = json.loads(request.body.decode())
 
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost'))
+        pika.ConnectionParameters(host=MQ_IP))
     channel = connection.channel()
 
     channel.queue_declare(queue='hello')
