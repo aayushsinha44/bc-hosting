@@ -56,7 +56,7 @@ function loadFunction(id, e) {
 	$.get(url, function(response) {
 		console.log(response);
 		var domainPortal = document.getElementById('domainPortal');
-		domainPortal.innerHTML = '<div style="color: white;">Url:'+arn_url+'/'+App.account+'/'+App.function_id+'/<br/><br/></div><div class="row" style="padding-top: 20px;"><div id="function_list" class="col-lg-2"></div><div class="col-lg-10 id="code_area"><textarea style="width:90%; height: 400px;" id="function_code_area"></textarea><br /><button onclick=update_function_code_area() class="btn btn-success">Save</button></div></div>';
+		domainPortal.innerHTML = '<div style="color: white;">Url:'+arn_url+'/get_response/'+App.account+'/'+App.function_id+'/<br/><br/></div><div class="row" style="padding-top: 20px;"><div id="function_list" class="col-lg-2"></div><div class="col-lg-10 id="code_area"><textarea style="width:90%; height: 400px;" id="function_code_area"></textarea><br /><button onclick=update_function_code_area() class="btn btn-success">Save</button></div></div>';
 		var function_list = document.getElementById('function_list');
 		for(var i=0;i<response.data.length;i++) {
 			App.idCodeMap[response.data[i].id] = response.data[i].code;
