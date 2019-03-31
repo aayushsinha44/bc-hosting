@@ -3,6 +3,7 @@
 // 4. If no index.html in uploaded zip..throw error and stop uploading
 //Show file structure during uuploading also with status and loading
 //Ayush todo  - refresh page after file upload and block chain transaction complete
+var DOMAIN = "http://localhost:3000/"
 
 App = {
   web3Provider: null,
@@ -31,6 +32,7 @@ var check_for_only_html = 0;
 var total_files_altered = 0;
 var metamask_cnt = 0;
 var ycounter=0;
+
 
 
 function init() {
@@ -794,7 +796,7 @@ function refract_notexisting_file(html) {
 			continue;
 			var changedFileName = getChangedFileName(tag[j].href.split('/'));
 			//console.log("refract"+" "+changedFileName);
-			tag[j].href = 'http://localhost:3000/' + App.website_address + '/' + changedFileName;
+			tag[j].href = DOMAIN + App.website_address + '/' + changedFileName;
 		}
 		else{
 			//console.log(tag[j].src);

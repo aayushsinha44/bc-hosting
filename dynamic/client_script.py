@@ -8,6 +8,8 @@ import json
 import subprocess
 
 MQ_IP = '192.168.43.59'
+RESPONSE_RECEIVER = 'http://192.168.43.59:4000'
+GATEWAY = 'http://192.168.43.59:8000'
 
 cred = pika.PlainCredentials('test', 'test')
 connection = pika.BlockingConnection(
@@ -27,20 +29,22 @@ def system_setup():
 
 system_setup()
 
+print("Enter your name:", end="")
+NAME = input()
+
 print(' [*] Waiting for messages. To exit press CTRL+C')
 
 def function_api(id):
-	url = 'http://192.168.43.59:8000/function/'+str(id)+'/'
+	url = GATEWAY+'/function/'+str(id)+'/'
 	res = requests.get(url)
 	res = json.loads(res.text)
 	return res
 
 def set_directory_structure(res):
-	print(res)
 	os.system('rm -rf /tmp/'+str(res["function"][0]["id"]))
 	for r in res["data"]:
-		
-		os.system('mkdir /tmp/'+str(res["function"][0]["id"])+r["parent"])
+		if not os.path.isdir('/tmp/'+str(res["function"][0]["id"])+r["parent"]):
+			os.system('mkdir /tmp/'+str(res["function"][0]["id"])+r["parent"])
 		code = r["code"]
 		name = r["name"]
 
@@ -53,7 +57,6 @@ def add_file(res, event):
 	for r in res["data"]:
 
 		if r["is_starting"]:
-			print(r)
 			name = r["name"]
 			f1 = open('/tmp/'+str(res["function"][0]["id"])+r["parent"]+name, 'r')
 			f = open('/tmp/'+str(res["function"][0]["id"])+r["parent"]+name, 'a')
@@ -87,37 +90,38 @@ def hit_response_api(token, response):
 	body = {
 		"token": token,
 		"response": response,
-		"id": 2
+		"id": NAME
 	}
-	url = 'http://192.168.43.59:4000/send_response/'
+	url = RESPONSE_RECEIVER+'/send_response/'
 	res = requests.get(url, json=body)
 	res = json.dumps(res.text)
+	print("Completed")
 	return res
 
 def callback(ch, method, properties, body):
 	print('Received Request')
-    body = json.loads(body.decode())
-    token = body["token"]
+	body = json.loads(body.decode())
+	token = body["token"]
 
-    jwt_string = jwt.decode(token, "asfjoew@23r8wjfosdfn", algorithms=['HS256'])
-    function_id = jwt_string["function_id"]
-    address = jwt_string["address"]
-    request_number = jwt_string["request_number"]
-    event = (jwt_string["event"])
+	jwt_string = jwt.decode(token, "asfjoew@23r8wjfosdfn", algorithms=['HS256'])
+	function_id = jwt_string["function_id"]
+	address = jwt_string["address"]
+	request_number = jwt_string["request_number"]
+	event = (jwt_string["event"])
 
-    # call function api
-    res_fun = function_api(function_id)
+	# call function api
+	res_fun = function_api(function_id)
 
-    # make directory structure
-    set_directory_structure(res_fun)
+	# make directory structure
+	set_directory_structure(res_fun)
 
-    # add file
-    path = add_file(res_fun, event)
+	# add file
+	path = add_file(res_fun, event)
 
-    # Execute
-    response = execute(path)
-    # hit with response api
-    hit_response_api(token, response)
+	# Execute
+	response = execute(path)
+	# hit with response api
+	hit_response_api(token, response)
 
 channel.basic_consume(
     queue=queue_name, on_message_callback=callback, auto_ack=True)

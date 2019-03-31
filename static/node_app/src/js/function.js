@@ -1,3 +1,8 @@
+var GATEWAY_IP = 'http://192.168.43.59';
+var GATEWAY_PORT = '8000';
+var GATEWAY_URL = GATEWAY_IP+':'+GATEWAY_PORT;
+
+
 App = {
 	account: null,
 	web3Provider: null,
@@ -25,7 +30,7 @@ function initweb3() {
 }
 
 function getAllFunctions(){
-	var url = "http://192.168.43.59:8000/get_all_function/"+App.account+"/";
+	var url = GATEWAY_URL+"/get_all_function/"+App.account+"/";
 	$.get(url, function(response) {
 		console.log(response);
 		response = response.function;
@@ -45,7 +50,7 @@ function loadFunction(id, e) {
 	App.idStartMap = {};
 	App.idParentMap = {};
 	App.idNameMap = {};
-	var url = "http://192.168.43.59:8000/function/"+id+"/";
+	var url = GATEWAY_URL+"/function/"+id+"/";
 	App.function_id = id;
 	$.get(url, function(response) {
 		console.log(response);
@@ -58,8 +63,8 @@ function loadFunction(id, e) {
 			App.idParentMap[response.data[i].id] = response.data[i].parent;
 			App.idNameMap[response.data[i].id] = response.data[i].name;
 			console.log("loop", App.idNameMap);
-			if (i ==0 ) function_list.innerHTML = '<div class="boughtDomain" id='+ response.data[i].id+' onclick=showCode('+response.data[i].id+')>'+response.data[i].name+'</div>';
-			else function_list.innerHTML += '<div class="boughtDomain" id='+ response.data[i].id+' onclick=showCode('+response.data[i].id+')>'+response.data[i].name+'</div>';
+			if (i ==0 ) function_list.innerHTML = '<div class="boughtDomain" id='+ response.data[i].id+' onclick=showCode('+response.data[i].id+')>'+response.data[i].name+'-'+response.data[i].id+'</div>';
+			else function_list.innerHTML += '<div class="boughtDomain" id='+ response.data[i].id+' onclick=showCode('+response.data[i].id+')>'+response.data[i].name+'-'+response.data[i].id+'</div>';
 		}
 		function_list.innerHTML += "<div><form href='#' method='GET'><input type='text' id='function_code_name' placeholder='new function name' /><input type='checkbox' id='is_start_check'><button onclick=addFunctionCode()>Add</button></form></div>";
 	});
@@ -82,7 +87,7 @@ function addFunctionCode() {
 			}
 		]
 	};
-	var url="http://192.168.43.59:8000/update_function/";
+	var url = GATEWAY_URL+"/update_function/";
 	$.post(url, JSON.stringify(body), function(result, data){
 		console.log(result);
 	});
@@ -112,7 +117,7 @@ function update_function_code_area() {
 		]
 	};
 	console.log(body);
-	var url="http://192.168.43.59:8000/update_function/";
+	var url= GATEWAY_URL+"/update_function/";
 	$.post(url, JSON.stringify(body), function(result, data){
 		console.log(result);
 		window.location.reload();
@@ -140,7 +145,7 @@ function checkFunctionAvailability(){
 	console.log("called");
 	$("#functionCheckLoading").show();
 	var function_name = $('#functionName').val().toLowerCase().trim();
-	var check_url = "http://192.168.43.59:8000" + '/check_function/' + App.account + '/' + function_name;
+	var check_url = GATEWAY_URL + '/check_function/' + App.account + '/' + function_name;
 	console.log(check_url);
 	// var isFunctionExist = get_response_https(check_url);
 	// console.log(isFunctionExist,"a");
@@ -178,7 +183,7 @@ function createFunction(){
 	//$("#createWebsiteForm").hide();
 	var function_name = $('#functionName').val().toLowerCase().trim();
 	console.log(function_name);
-	var url = "http://192.168.43.59:8000/add_function/";
+	var url = GATEWAY_URL + "/add_function/";
 	$.post(url, JSON.stringify({"name": function_name, "user_address": App.account}), function(result){
 	     console.log(result);
 	     $("#mainLoading").hide();
